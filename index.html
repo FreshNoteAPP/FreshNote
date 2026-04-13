@@ -1,0 +1,981 @@
+<!doctype html>
+<html lang="id">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>FreshNote</title>
+  <style>
+    :root{
+      --bg:#0b1220;
+      --card:#111a2c;
+      --card2:#16213a;
+      --text:#eef3ff;
+      --muted:#9fb0d0;
+      --line:rgba(255,255,255,.08);
+      --brand:#7c9cff;
+      --brand2:#52d6b5;
+      --danger:#ff6b7a;
+      --warn:#ffca6a;
+      --ok:#57d38c;
+      --shadow:0 18px 50px rgba(0,0,0,.28);
+      --radius:22px;
+    }
+
+    *{box-sizing:border-box}
+    html,body{
+      margin:0;
+      min-height:100%;
+      background:radial-gradient(circle at top,#152648 0%,#0b1220 42%,#070c15 100%);
+      color:var(--text);
+      font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
+    }
+
+    a{color:inherit}
+    .wrap{max-width:1240px;margin:0 auto;padding:24px}
+    .hidden{display:none !important}
+
+    .topbar{
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      gap:16px;
+      margin-bottom:20px;
+    }
+
+    .brand{display:flex;align-items:center;gap:12px}
+    .logo{
+      width:48px;height:48px;border-radius:16px;
+      background:linear-gradient(135deg,var(--brand),var(--brand2));
+      display:grid;place-items:center;
+      font-weight:800;color:#09111d;
+      box-shadow:var(--shadow);
+    }
+    .brand h1{font-size:22px;line-height:1.1;margin:0}
+    .brand p{margin:2px 0 0;color:var(--muted);font-size:13px}
+
+    .chip{
+      padding:10px 14px;
+      border-radius:999px;
+      background:rgba(255,255,255,.07);
+      border:1px solid var(--line);
+      color:var(--muted);
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+    }
+
+    .btn{
+      border:0;
+      border-radius:14px;
+      padding:12px 16px;
+      font-weight:700;
+      cursor:pointer;
+      color:#08101b;
+      background:linear-gradient(135deg,#fff,#cbd6ff);
+      transition:.2s transform,.2s opacity;
+    }
+    .btn:hover{transform:translateY(-1px)}
+    .btn.secondary{
+      background:rgba(255,255,255,.08);
+      color:var(--text);
+      border:1px solid var(--line);
+    }
+    .btn.ghost{
+      background:transparent;
+      color:var(--text);
+      border:1px solid var(--line);
+    }
+    .btn.danger{background:linear-gradient(135deg,#ff93a0,#ff6b7a)}
+    .btn:disabled{opacity:.45;cursor:not-allowed;transform:none}
+
+    .layout{display:grid;grid-template-columns:1.1fr .9fr;gap:20px}
+    .card{
+      background:linear-gradient(180deg,rgba(255,255,255,.06),rgba(255,255,255,.03));
+      border:1px solid var(--line);
+      border-radius:var(--radius);
+      box-shadow:var(--shadow);
+      backdrop-filter:blur(10px);
+    }
+    .card .inner{padding:20px}
+
+    .hero{padding:28px}
+    .hero h2{font-size:34px;line-height:1.05;margin:0 0 10px}
+    .hero p{margin:0;color:var(--muted);max-width:58ch}
+
+    .grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:18px}
+    .stat{
+      padding:16px;
+      border:1px solid var(--line);
+      border-radius:18px;
+      background:rgba(255,255,255,.04);
+    }
+    .stat .k{font-size:26px;font-weight:800}
+    .stat .l{color:var(--muted);font-size:13px;margin-top:4px}
+
+    .form{display:grid;gap:14px}
+    .row{display:grid;grid-template-columns:repeat(2,1fr);gap:14px}
+    .field{display:grid;gap:7px}
+    label{font-size:13px;color:#d8e3ff}
+    input,select,textarea{
+      width:100%;
+      background:rgba(8,14,25,.72);
+      color:var(--text);
+      border:1px solid var(--line);
+      border-radius:14px;
+      padding:12px 14px;
+      outline:none;
+    }
+    textarea{min-height:96px;resize:vertical}
+    input:focus,select:focus,textarea:focus{
+      border-color:rgba(124,156,255,.7);
+      box-shadow:0 0 0 3px rgba(124,156,255,.18);
+    }
+
+    .auth-tabs{display:flex;gap:10px;margin-bottom:16px}
+    .tab{
+      flex:1;
+      border-radius:14px;
+      padding:12px;
+      border:1px solid var(--line);
+      background:rgba(255,255,255,.05);
+      color:var(--text);
+      cursor:pointer;
+      font-weight:700;
+    }
+    .tab.active{background:linear-gradient(135deg,rgba(124,156,255,.28),rgba(82,214,181,.22))}
+
+    .section-head{
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      gap:12px;
+      margin-bottom:16px;
+    }
+    .section-head h3{margin:0;font-size:18px}
+
+    .filterbar{
+      display:grid;
+      grid-template-columns:1.1fr .8fr .8fr .8fr;
+      gap:12px;
+      margin-bottom:14px;
+    }
+
+    .items{display:grid;gap:14px}
+    .item{
+      padding:16px;
+      border:1px solid var(--line);
+      border-radius:18px;
+      background:rgba(255,255,255,.04);
+    }
+    .item.top{border-color:rgba(255,202,106,.35)}
+    .item.bad{border-color:rgba(255,107,122,.45)}
+    .item-head{
+      display:flex;
+      justify-content:space-between;
+      align-items:flex-start;
+      gap:12px;
+    }
+    .item h4{margin:0 0 6px;font-size:18px}
+    .muted{color:var(--muted)}
+
+    .meta{
+      display:flex;
+      flex-wrap:wrap;
+      gap:8px;
+      margin-top:12px;
+    }
+    .pill{
+      padding:7px 10px;
+      border-radius:999px;
+      background:rgba(255,255,255,.08);
+      border:1px solid var(--line);
+      font-size:12px;
+      color:var(--muted);
+    }
+    .pill.warn{
+      background:rgba(255,202,106,.13);
+      color:#ffd98f;
+      border-color:rgba(255,202,106,.24);
+    }
+    .pill.bad{
+      background:rgba(255,107,122,.13);
+      color:#ffb4bd;
+      border-color:rgba(255,107,122,.24);
+    }
+    .pill.ok{
+      background:rgba(87,211,140,.12);
+      color:#a8ffd0;
+      border-color:rgba(87,211,140,.24);
+    }
+
+    .actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:14px}
+    .small{padding:10px 12px;border-radius:12px;font-size:13px}
+
+    .notice{
+      padding:14px 16px;
+      border-radius:16px;
+      border:1px solid rgba(255,202,106,.26);
+      background:rgba(255,202,106,.08);
+      color:#ffe0a0;
+      margin-bottom:14px;
+    }
+    .error{
+      border-color:rgba(255,107,122,.3);
+      background:rgba(255,107,122,.1);
+      color:#ffcad0;
+    }
+    .success{
+      border-color:rgba(87,211,140,.3);
+      background:rgba(87,211,140,.1);
+      color:#c8ffdf;
+    }
+
+    .toast{
+      position:fixed;
+      right:18px;
+      bottom:18px;
+      min-width:260px;
+      max-width:360px;
+      padding:14px 16px;
+      border-radius:16px;
+      background:#10192b;
+      border:1px solid var(--line);
+      box-shadow:var(--shadow);
+      z-index:30;
+    }
+    .toast strong{display:block;margin-bottom:4px}
+
+    .premium-banner{
+      display:flex;
+      justify-content:space-between;
+      gap:12px;
+      align-items:center;
+      padding:16px 18px;
+      border-radius:18px;
+      background:linear-gradient(135deg,rgba(124,156,255,.18),rgba(82,214,181,.13));
+      border:1px solid rgba(255,255,255,.1);
+      margin-bottom:16px;
+    }
+    .premium-banner p{margin:4px 0 0;color:var(--muted)}
+    .lock{opacity:.58}
+
+    .footer-note{margin-top:12px;color:var(--muted);font-size:12px}
+
+    .setup{
+      margin-top:20px;
+      padding:20px;
+      border-radius:18px;
+      background:rgba(255,107,122,.08);
+      border:1px solid rgba(255,107,122,.24);
+      color:#ffd3d8;
+    }
+
+    @media (max-width: 980px){
+      .layout{grid-template-columns:1fr}
+      .filterbar,.grid3,.row{grid-template-columns:1fr}
+      .topbar{flex-direction:column;align-items:flex-start}
+      .hero h2{font-size:28px}
+    }
+  </style>
+
+  <script>
+    window.SUPABASE_URL = "https://vlnzxmjnbbunezdxkoj.supabase.co";
+    window.SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZsbnp4eG1qbmJidW5lemR4a29qIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzYwODA5MDUsImV4cCI6MjA5MTY1NjkwNX0.RacC66cQYqoMsqe-Yti5jc16sEpNUeYy0YY2TyWtcuE";
+  </script>
+</head>
+<body>
+  <div class="wrap">
+    <header class="topbar">
+      <div class="brand">
+        <div class="logo">FN</div>
+        <div>
+          <h1>FreshNote</h1>
+          <p>Arsip bahan, stok, dan pengingat masa habis</p>
+        </div>
+      </div>
+      <div class="chip" id="sessionChip">Belum masuk</div>
+    </header>
+
+    <section id="setupBox" class="setup hidden">
+      <strong>Belum tersambung ke Supabase.</strong>
+      <div style="margin-top:6px">
+        Tempel <b>Project URL</b> dan <b>anon / publishable key</b> di bagian atas file HTML ini, lalu upload ke hosting gratis.
+      </div>
+    </section>
+
+    <section id="authView" class="layout">
+      <div class="card hero">
+        <h2>Kelola bahan, lihat yang hampir habis, dan bedakan akses free vs premium.</h2>
+        <p>Aplikasi ini pakai login Supabase, data tersimpan per user, dan semua orang bisa akses lewat link publik setelah kamu deploy.</p>
+
+        <div class="grid3">
+          <div class="stat">
+            <div class="k">Gratis</div>
+            <div class="l">Auth + database + hosting frontend</div>
+          </div>
+          <div class="stat">
+            <div class="k">Aman</div>
+            <div class="l">RLS membatasi data tiap user</div>
+          </div>
+          <div class="stat">
+            <div class="k">Siap Publish</div>
+            <div class="l">Cocok untuk website publik</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="inner">
+          <div class="auth-tabs">
+            <button class="tab active" id="loginTab">Masuk</button>
+            <button class="tab" id="registerTab">Daftar</button>
+          </div>
+
+          <form id="authForm" class="form">
+            <div class="field" id="nameField" style="display:none">
+              <label>Nama</label>
+              <input id="fullName" type="text" placeholder="Nama kamu" />
+            </div>
+
+            <div class="field">
+              <label>Email</label>
+              <input id="email" type="email" placeholder="nama@email.com" required />
+            </div>
+
+            <div class="field">
+              <label>Password</label>
+              <input id="password" type="password" placeholder="Minimal 6 karakter" required />
+            </div>
+
+            <button class="btn" type="submit" id="authSubmit">Masuk</button>
+            <div class="footer-note">Kalau email confirmation di Supabase aktif, pengguna harus verifikasi email dulu sebelum masuk.</div>
+          </form>
+        </div>
+      </div>
+    </section>
+
+    <section id="appView" class="hidden">
+      <div class="premium-banner card">
+        <div>
+          <strong id="welcomeText">Selamat datang</strong>
+          <p id="planText">Plan: free</p>
+        </div>
+        <div class="actions" style="margin:0">
+          <button id="notifyBtn" class="btn secondary small hidden">Aktifkan notifikasi</button>
+          <button id="exportBtn" class="btn secondary small">Export CSV</button>
+          <button id="logoutBtn" class="btn ghost small">Keluar</button>
+        </div>
+      </div>
+
+      <div class="grid3" style="margin-bottom:16px">
+        <div class="stat"><div class="k" id="countAll">0</div><div class="l">Total bahan</div></div>
+        <div class="stat"><div class="k" id="countSoon">0</div><div class="l">Mau habis</div></div>
+        <div class="stat"><div class="k" id="countExpired">0</div><div class="l">Sudah habis</div></div>
+      </div>
+
+      <div class="layout">
+        <div class="card">
+          <div class="inner">
+            <div class="section-head">
+              <h3>Daftar bahan</h3>
+              <span class="chip" id="limitInfo">Limit free: 8 item</span>
+            </div>
+
+            <div class="premium-banner" id="premiumHint">
+              <div>
+                <strong>Fitur premium</strong>
+                <p>Unlimited item, urutkan dari yang paling cepat habis, dan export CSV.</p>
+              </div>
+              <button id="setPremiumHintBtn" class="btn secondary small">Cara aktifkan</button>
+            </div>
+
+            <div class="filterbar">
+              <input id="searchInput" placeholder="Cari nama bahan..." />
+              <select id="filterStatus">
+                <option value="all">Semua status</option>
+                <option value="soon">Mau habis</option>
+                <option value="active">Aman</option>
+                <option value="expired">Habis</option>
+              </select>
+              <select id="filterCategory">
+                <option value="all">Semua kategori</option>
+              </select>
+              <select id="sortBy">
+                <option value="newest">Terbaru</option>
+                <option value="oldest">Terlama</option>
+                <option value="soonest">Paling cepat habis</option>
+              </select>
+            </div>
+
+            <div id="itemsList" class="items"></div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="inner">
+            <div class="section-head">
+              <h3 id="formTitle">Tambah bahan</h3>
+              <span class="chip" id="itemCounter">0/8</span>
+            </div>
+
+            <form id="itemForm" class="form">
+              <div class="field">
+                <label>Nama bahan</label>
+                <input id="title" type="text" placeholder="Contoh: Beras 5 kg" required />
+              </div>
+
+              <div class="row">
+                <div class="field">
+                  <label>Kategori</label>
+                  <select id="category">
+                    <option value="Makanan">Makanan</option>
+                    <option value="Minuman">Minuman</option>
+                    <option value="Obat">Obat</option>
+                    <option value="Kosmetik">Kosmetik</option>
+                    <option value="Rumah Tangga">Rumah Tangga</option>
+                    <option value="Lainnya">Lainnya</option>
+                  </select>
+                </div>
+                <div class="field">
+                  <label>Jumlah</label>
+                  <input id="quantity" type="number" min="1" value="1" required />
+                </div>
+              </div>
+
+              <div class="row">
+                <div class="field">
+                  <label>Satuan</label>
+                  <input id="unit" type="text" placeholder="pcs / botol / kg" value="pcs" required />
+                </div>
+                <div class="field">
+                  <label>Tanggal habis</label>
+                  <input id="expiryDate" type="date" required />
+                </div>
+              </div>
+
+              <div class="field">
+                <label>Reminder sebelum habis (hari)</label>
+                <input id="reminderDays" type="number" min="1" max="30" value="3" required />
+              </div>
+
+              <div class="field">
+                <label>Catatan</label>
+                <textarea id="notes" placeholder="Contoh: disimpan di rak atas"></textarea>
+              </div>
+
+              <div class="actions">
+                <button class="btn" type="submit" id="saveItemBtn">Simpan</button>
+                <button class="btn secondary" type="button" id="cancelEditBtn" style="display:none">Batal edit</button>
+              </div>
+            </form>
+
+            <div class="notice" id="freeNotice">
+              Akun free dibatasi 8 bahan aktif. Untuk premium, ubah kolom <b>plan</b> menjadi <b>premium</b> di tabel <b>profiles</b> pada Supabase Dashboard.
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <div id="toast" class="toast hidden"></div>
+  </div>
+
+  <script type="module">
+    import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm";
+
+    const SUPABASE_URL = window.SUPABASE_URL || "";
+    const SUPABASE_ANON_KEY = window.SUPABASE_ANON_KEY || "";
+    const configured = SUPABASE_URL && SUPABASE_ANON_KEY && !SUPABASE_URL.includes("PASTE_") && !SUPABASE_ANON_KEY.includes("PASTE_");
+
+    const $ = (id) => document.getElementById(id);
+    const els = {
+      setupBox: $("setupBox"),
+      authView: $("authView"),
+      appView: $("appView"),
+      sessionChip: $("sessionChip"),
+      loginTab: $("loginTab"),
+      registerTab: $("registerTab"),
+      nameField: $("nameField"),
+      authForm: $("authForm"),
+      authSubmit: $("authSubmit"),
+      fullName: $("fullName"),
+      email: $("email"),
+      password: $("password"),
+      welcomeText: $("welcomeText"),
+      planText: $("planText"),
+      notifyBtn: $("notifyBtn"),
+      exportBtn: $("exportBtn"),
+      logoutBtn: $("logoutBtn"),
+      premiumHint: $("premiumHint"),
+      setPremiumHintBtn: $("setPremiumHintBtn"),
+      countAll: $("countAll"),
+      countSoon: $("countSoon"),
+      countExpired: $("countExpired"),
+      limitInfo: $("limitInfo"),
+      itemCounter: $("itemCounter"),
+      searchInput: $("searchInput"),
+      filterStatus: $("filterStatus"),
+      filterCategory: $("filterCategory"),
+      sortBy: $("sortBy"),
+      itemsList: $("itemsList"),
+      itemForm: $("itemForm"),
+      formTitle: $("formTitle"),
+      title: $("title"),
+      category: $("category"),
+      quantity: $("quantity"),
+      unit: $("unit"),
+      expiryDate: $("expiryDate"),
+      reminderDays: $("reminderDays"),
+      notes: $("notes"),
+      saveItemBtn: $("saveItemBtn"),
+      cancelEditBtn: $("cancelEditBtn"),
+      freeNotice: $("freeNotice"),
+      toast: $("toast"),
+    };
+
+    let supabase = null;
+    let session = null;
+    let profile = null;
+    let items = [];
+    let editId = null;
+    let authMode = "login";
+    const notifiedKeys = new Set();
+
+    function escapeHTML(str = "") {
+      return String(str)
+        .replaceAll("&", "&amp;")
+        .replaceAll("<", "&lt;")
+        .replaceAll(">", "&gt;")
+        .replaceAll('"', "&quot;")
+        .replaceAll("'", "&#039;");
+    }
+
+    function showToast(title, message, kind = "info") {
+      els.toast.className = `toast ${kind === "error" ? "error" : kind === "success" ? "success" : ""}`;
+      els.toast.innerHTML = `<strong>${escapeHTML(title)}</strong><div>${escapeHTML(message)}</div>`;
+      els.toast.classList.remove("hidden");
+      clearTimeout(showToast._t);
+      showToast._t = setTimeout(() => els.toast.classList.add("hidden"), 3200);
+    }
+
+    function daysLeft(dateStr) {
+      const today = new Date();
+      today.setHours(0, 0, 0, 0);
+      const target = new Date(`${dateStr}T00:00:00`);
+      return Math.round((target - today) / 86400000);
+    }
+
+    function getStatus(item) {
+      const d = daysLeft(item.expiry_date);
+      if (d < 0) return { key: "expired", label: `Habis ${Math.abs(d)} hari lalu`, cls: "bad" };
+      if (d <= item.reminder_days) return { key: "soon", label: `Mau habis (${d} hari lagi)`, cls: "warn" };
+      return { key: "active", label: `Aman (${d} hari lagi)`, cls: "ok" };
+    }
+
+    function formatDate(dateStr) {
+      return new Intl.DateTimeFormat("id-ID", { dateStyle: "medium" }).format(new Date(`${dateStr}T00:00:00`));
+    }
+
+    function currentPlan() {
+      return profile?.plan || "free";
+    }
+
+    function isPremium() {
+      return currentPlan() === "premium";
+    }
+
+    function setMode(mode) {
+      authMode = mode;
+      els.loginTab.classList.toggle("active", mode === "login");
+      els.registerTab.classList.toggle("active", mode === "register");
+      els.nameField.style.display = mode === "register" ? "grid" : "none";
+      els.authSubmit.textContent = mode === "register" ? "Daftar" : "Masuk";
+    }
+
+    function updateCounters() {
+      const soon = items.filter((x) => getStatus(x).key === "soon").length;
+      const expired = items.filter((x) => getStatus(x).key === "expired").length;
+      els.countAll.textContent = String(items.length);
+      els.countSoon.textContent = String(soon);
+      els.countExpired.textContent = String(expired);
+      els.itemCounter.textContent = `${items.length}/${isPremium() ? "∞" : "8"}`;
+      els.limitInfo.textContent = isPremium() ? "Premium: unlimited" : "Limit free: 8 item";
+      els.planText.textContent = `Plan: ${currentPlan()}`;
+    }
+
+    function renderCategoryOptions() {
+      const current = els.filterCategory.value || "all";
+      const categories = [...new Set(items.map((i) => i.category).filter(Boolean))].sort((a, b) => a.localeCompare(b));
+      els.filterCategory.innerHTML =
+        `<option value="all">Semua kategori</option>` +
+        categories.map((c) => `<option value="${escapeHTML(c)}">${escapeHTML(c)}</option>`).join("");
+      els.filterCategory.value = categories.includes(current) ? current : "all";
+    }
+
+    function applyFilters() {
+      const q = els.searchInput.value.trim().toLowerCase();
+      const status = els.filterStatus.value;
+      const category = els.filterCategory.value;
+      let list = [...items];
+
+      if (q) list = list.filter((i) => `${i.title} ${i.notes} ${i.category}`.toLowerCase().includes(q));
+      if (category !== "all") list = list.filter((i) => i.category === category);
+      if (status !== "all") list = list.filter((i) => getStatus(i).key === status);
+
+      const sortBy = els.sortBy.value;
+      if (sortBy === "soonest") {
+        if (!isPremium()) {
+          showToast("Fitur premium", "Urutkan berdasarkan masa habis hanya untuk premium.", "error");
+          els.sortBy.value = "newest";
+        } else {
+          list.sort((a, b) => daysLeft(a.expiry_date) - daysLeft(b.expiry_date));
+        }
+      } else if (sortBy === "oldest") {
+        list.sort((a, b) => new Date(a.created_at) - new Date(b.created_at));
+      } else {
+        list.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
+      }
+
+      return list;
+    }
+
+    function renderItems() {
+      updateCounters();
+      renderCategoryOptions();
+
+      const list = applyFilters();
+      if (!list.length) {
+        els.itemsList.innerHTML = `
+          <div class="item">
+            <h4>Belum ada data</h4>
+            <div class="muted">Tambahkan bahan pertama kamu dari form di sebelah kanan.</div>
+          </div>
+        `;
+        return;
+      }
+
+      els.itemsList.innerHTML = list.map((item) => {
+        const status = getStatus(item);
+        const cls = status.key === "expired" ? "bad" : status.key === "soon" ? "top" : "";
+        return `
+          <article class="item ${cls}">
+            <div class="item-head">
+              <div>
+                <h4>${escapeHTML(item.title)}</h4>
+                <div class="muted">${escapeHTML(item.category)} • ${escapeHTML(item.quantity)} ${escapeHTML(item.unit)}</div>
+              </div>
+              <span class="pill ${status.cls}">${escapeHTML(status.label)}</span>
+            </div>
+
+            <div class="meta">
+              <span class="pill">Habis: ${escapeHTML(formatDate(item.expiry_date))}</span>
+              <span class="pill">Reminder: ${escapeHTML(item.reminder_days)} hari</span>
+              <span class="pill">Dibuat: ${escapeHTML(formatDate(item.created_at.slice(0,10)))}</span>
+            </div>
+
+            ${item.notes ? `<div style="margin-top:12px" class="muted">${escapeHTML(item.notes)}</div>` : ""}
+
+            <div class="actions">
+              <button class="btn secondary small" data-edit="${item.id}">Ubah</button>
+              <button class="btn danger small" data-del="${item.id}">Hapus</button>
+            </div>
+          </article>
+        `;
+      }).join("");
+    }
+
+    async function loadProfile() {
+      const { data, error } = await supabase.from("profiles").select("*").eq("id", session.user.id).maybeSingle();
+      if (error) throw error;
+      if (!data) throw new Error("Profil tidak ditemukan. Pastikan schema.sql sudah dijalankan.");
+      profile = data;
+      els.welcomeText.textContent = `Selamat datang, ${profile.full_name || session.user.email}`;
+      els.freeNotice.classList.toggle("hidden", isPremium());
+      els.premiumHint.classList.toggle("hidden", isPremium());
+      els.notifyBtn.classList.toggle("hidden", !isPremium() || !("Notification" in window));
+      els.exportBtn.disabled = !isPremium();
+    }
+
+    async function loadItems() {
+      const { data, error } = await supabase
+        .from("items")
+        .select("*")
+        .eq("user_id", session.user.id)
+        .order("created_at", { ascending: false });
+
+      if (error) throw error;
+      items = data || [];
+      renderItems();
+      handleNotifications();
+    }
+
+    function resetForm() {
+      editId = null;
+      els.formTitle.textContent = "Tambah bahan";
+      els.saveItemBtn.textContent = "Simpan";
+      els.cancelEditBtn.style.display = "none";
+      els.itemForm.reset();
+      els.quantity.value = 1;
+      els.unit.value = "pcs";
+      els.reminderDays.value = 3;
+      els.category.value = "Makanan";
+    }
+
+    function fillForm(item) {
+      editId = item.id;
+      els.formTitle.textContent = "Ubah bahan";
+      els.saveItemBtn.textContent = "Simpan perubahan";
+      els.cancelEditBtn.style.display = "inline-flex";
+      els.title.value = item.title;
+      els.category.value = item.category;
+      els.quantity.value = item.quantity;
+      els.unit.value = item.unit;
+      els.expiryDate.value = item.expiry_date;
+      els.reminderDays.value = item.reminder_days;
+      els.notes.value = item.notes || "";
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+
+    async function saveItem(e) {
+      e.preventDefault();
+
+      const payload = {
+        user_id: session.user.id,
+        title: els.title.value.trim(),
+        category: els.category.value,
+        quantity: Number(els.quantity.value),
+        unit: els.unit.value.trim(),
+        expiry_date: els.expiryDate.value,
+        reminder_days: Number(els.reminderDays.value),
+        notes: els.notes.value.trim(),
+      };
+
+      if (!payload.title) return showToast("Validasi", "Nama bahan wajib diisi.", "error");
+      if (!payload.expiry_date) return showToast("Validasi", "Tanggal habis wajib diisi.", "error");
+
+      try {
+        if (editId) {
+          const { error } = await supabase.from("items").update(payload).eq("id", editId).eq("user_id", session.user.id);
+          if (error) throw error;
+          showToast("Berhasil", "Data bahan diperbarui.", "success");
+        } else {
+          const { error } = await supabase.from("items").insert([payload]);
+          if (error) throw error;
+          showToast("Berhasil", "Bahan ditambahkan.", "success");
+        }
+        resetForm();
+        await loadItems();
+      } catch (err) {
+        showToast("Gagal", err.message || "Terjadi kesalahan.", "error");
+      }
+    }
+
+    async function deleteItem(id) {
+      if (!confirm("Hapus bahan ini?")) return;
+      const { error } = await supabase.from("items").delete().eq("id", id).eq("user_id", session.user.id);
+      if (error) return showToast("Gagal", error.message, "error");
+      showToast("Berhasil", "Bahan dihapus.", "success");
+      await loadItems();
+    }
+
+    function exportCSV() {
+      if (!isPremium()) {
+        showToast("Fitur premium", "Export CSV hanya untuk premium.", "error");
+        return;
+      }
+
+      const rows = [["Nama","Kategori","Jumlah","Satuan","Tanggal habis","Reminder hari","Catatan","Status"]];
+      items.forEach((item) => {
+        const status = getStatus(item).label;
+        rows.push([
+          item.title,
+          item.category,
+          item.quantity,
+          item.unit,
+          item.expiry_date,
+          item.reminder_days,
+          item.notes || "",
+          status
+        ]);
+      });
+
+      const csv = rows
+        .map((r) => r.map((v) => `"${String(v).replaceAll('"', '""')}"`).join(","))
+        .join("\n");
+
+      const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = `freshnote_${new Date().toISOString().slice(0,10)}.csv`;
+      a.click();
+      URL.revokeObjectURL(url);
+    }
+
+    async function handleNotifications() {
+      if (!isPremium() || !("Notification" in window) || Notification.permission !== "granted") return;
+      const soonItems = items.filter((item) => getStatus(item).key === "soon" || getStatus(item).key === "expired");
+      for (const item of soonItems) {
+        const key = `${item.id}:${item.expiry_date}`;
+        if (notifiedKeys.has(key)) continue;
+        notifiedKeys.add(key);
+        new Notification("FreshNote reminder", {
+          body: `${item.title} ${getStatus(item).label.toLowerCase()}`
+        });
+      }
+    }
+
+    async function requestNotifications() {
+      if (!isPremium()) return showToast("Fitur premium", "Notifikasi browser hanya untuk premium.", "error");
+      if (!("Notification" in window)) return showToast("Tidak didukung", "Browser ini tidak mendukung notifikasi.", "error");
+
+      const result = await Notification.requestPermission();
+      if (result === "granted") {
+        showToast("Aktif", "Notifikasi berhasil diaktifkan.", "success");
+        els.notifyBtn.classList.add("hidden");
+        handleNotifications();
+      } else {
+        showToast("Ditolak", "Izin notifikasi belum diberikan.", "error");
+      }
+    }
+
+    async function handleAuthSubmit(e) {
+      e.preventDefault();
+      const email = els.email.value.trim();
+      const password = els.password.value;
+      const fullName = els.fullName.value.trim();
+
+      try {
+        els.authSubmit.disabled = true;
+
+        if (authMode === "register") {
+          const { data, error } = await supabase.auth.signUp({
+            email,
+            password,
+            options: { data: { full_name: fullName || email.split("@")[0] } },
+          });
+          if (error) throw error;
+
+          if (data.session) {
+            showToast("Berhasil", "Akun dibuat dan kamu sudah masuk.", "success");
+          } else {
+            showToast("Cek email", "Verifikasi email dulu jika confirmation aktif.", "success");
+          }
+        } else {
+          const { error } = await supabase.auth.signInWithPassword({ email, password });
+          if (error) throw error;
+          showToast("Berhasil", "Login sukses.", "success");
+        }
+
+        els.authForm.reset();
+        if (authMode === "register") setMode("login");
+      } catch (err) {
+        showToast("Gagal", err.message || "Autentikasi gagal.", "error");
+      } finally {
+        els.authSubmit.disabled = false;
+      }
+    }
+
+    async function logout() {
+      await supabase.auth.signOut();
+    }
+
+    function bind() {
+      els.loginTab.addEventListener("click", () => setMode("login"));
+      els.registerTab.addEventListener("click", () => setMode("register"));
+      els.authForm.addEventListener("submit", handleAuthSubmit);
+      els.logoutBtn.addEventListener("click", logout);
+      els.itemForm.addEventListener("submit", saveItem);
+      els.cancelEditBtn.addEventListener("click", resetForm);
+      els.exportBtn.addEventListener("click", exportCSV);
+      els.notifyBtn.addEventListener("click", requestNotifications);
+      els.setPremiumHintBtn.addEventListener("click", () => {
+        showToast("Premium", "Buka Supabase Dashboard → Table editor → profiles → ubah plan jadi premium untuk user ini.", "success");
+      });
+
+      [els.searchInput, els.filterStatus, els.filterCategory, els.sortBy].forEach((el) =>
+        el.addEventListener("input", renderItems)
+      );
+      [els.filterStatus, els.filterCategory, els.sortBy].forEach((el) =>
+        el.addEventListener("change", renderItems)
+      );
+
+      els.itemsList.addEventListener("click", async (e) => {
+        const edit = e.target.getAttribute("data-edit");
+        const del = e.target.getAttribute("data-del");
+        if (edit) {
+          const item = items.find((x) => x.id === edit);
+          if (item) fillForm(item);
+        }
+        if (del) await deleteItem(del);
+      });
+    }
+
+    function showAuth() {
+      els.appView.classList.add("hidden");
+      els.authView.classList.remove("hidden");
+      els.sessionChip.textContent = "Belum masuk";
+    }
+
+    function showApp() {
+      els.authView.classList.add("hidden");
+      els.appView.classList.remove("hidden");
+      els.sessionChip.textContent = `${profile?.full_name || session.user.email} • ${currentPlan()}`;
+    }
+
+    async function bootstrap() {
+      bind();
+      setMode("login");
+
+      if (!configured) {
+        els.setupBox.classList.remove("hidden");
+        showAuth();
+        return;
+      }
+
+      supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+      const { data } = await supabase.auth.getSession();
+      session = data.session || null;
+
+      if (session) {
+        try {
+          await loadProfile();
+          showApp();
+          await loadItems();
+        } catch (err) {
+          showToast("Error", err.message || "Gagal memuat data.", "error");
+          showAuth();
+        }
+      } else {
+        showAuth();
+      }
+
+      supabase.auth.onAuthStateChange(async (_event, newSession) => {
+        session = newSession;
+        if (!session) {
+          profile = null;
+          items = [];
+          editId = null;
+          showAuth();
+          return;
+        }
+
+        try {
+          await loadProfile();
+          showApp();
+          await loadItems();
+        } catch (err) {
+          showToast("Error", err.message || "Gagal memuat akun.", "error");
+        }
+      });
+
+      setInterval(() => {
+        if (session && profile) handleNotifications();
+      }, 60000);
+    }
+
+    bootstrap();
+  </script>
+</body>
+</html>
