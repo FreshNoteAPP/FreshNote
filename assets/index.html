@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="id">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="theme-color" content="#9ef3df" />
+  <title>FreshNote</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css" />
+  <script type="module" src="js/app.js" defer></script>
+</head>
+<body>
+  <div class="app-shell">
+    <header class="app-header">
+      <button class="icon-btn ghost hidden-desktop" id="menuBtn" aria-label="Menu">☰</button>
+      <div class="brand">
+        <img src="assets/logo.png" alt="FreshNote" class="brand-logo" />
+        <div class="brand-copy">
+          <strong>FRESH NOTE</strong>
+          <span>Arsip bahan & pengingat masa habis</span>
+        </div>
+      </div>
+      <button class="icon-btn" id="notifyIconBtn" aria-label="Notifikasi">🔔</button>
+    </header>
+
+    <main id="root"></main>
+
+    <nav class="bottom-nav" id="bottomNav" aria-label="Navigasi bawah">
+      <button class="nav-item active" data-nav="home" aria-label="Beranda">⌂</button>
+      <button class="nav-item" data-nav="saved" aria-label="Tersimpan">◫</button>
+      <button class="nav-item" data-nav="profile" aria-label="Profil">◉</button>
+    </nav>
+  </div>
+
+  <div id="modalHost"></div>
+</body>
+</html>
